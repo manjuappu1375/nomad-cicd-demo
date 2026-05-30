@@ -9,7 +9,6 @@ jobs:
 deploy:
 runs-on: ubuntu-latest
 
-```
 steps:
   - uses: actions/checkout@v4
 
@@ -22,4 +21,3 @@ steps:
       script: |
         cd /home/ubuntu/learn-nomad-getting-started/aws/learn-nomad-gs-pytechco/nomad
         nomad job run pytechco-web.hcl
-```
