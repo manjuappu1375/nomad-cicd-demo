@@ -11,21 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/nomad_deploy
-          chmod 600 ~/.ssh/nomad_deploy
-          echo "=== KEY FORMAT CHECK ===" 
-          head -1 ~/.ssh/nomad_deploy
-          tail -1 ~/.ssh/nomad_deploy
-          wc -l ~/.ssh/nomad_deploy
-          ssh-keygen -l -f ~/.ssh/nomad_deploy
-          ssh-keyscan -H ${{ secrets.NOMAD_HOST }} >> ~/.ssh/known_hosts
-
       - name: Deploy to Nomad
-        run: |
-          ssh -i ~/.ssh/nomad_deploy -v -o StrictHostKeyChecking=no ubuntu@${{ secrets.NOMAD_HOST }} "
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.NOMAD_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
             cd /home/ubuntu/learn-nomad-getting-started/aws/learn-nomad-gs-pytechco/nomad
             nomad job run pytechco-web.hcl
-          "
