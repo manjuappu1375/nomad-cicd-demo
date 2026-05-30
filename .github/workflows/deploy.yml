@@ -16,11 +16,16 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/nomad_deploy
           chmod 600 ~/.ssh/nomad_deploy
+          echo "=== KEY FORMAT CHECK ===" 
+          head -1 ~/.ssh/nomad_deploy
+          tail -1 ~/.ssh/nomad_deploy
+          wc -l ~/.ssh/nomad_deploy
+          ssh-keygen -l -f ~/.ssh/nomad_deploy
           ssh-keyscan -H ${{ secrets.NOMAD_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to Nomad
         run: |
-          ssh -i ~/.ssh/nomad_deploy -o StrictHostKeyChecking=no ubuntu@${{ secrets.NOMAD_HOST }} "
+          ssh -i ~/.ssh/nomad_deploy -v -o StrictHostKeyChecking=no ubuntu@${{ secrets.NOMAD_HOST }} "
             cd /home/ubuntu/learn-nomad-getting-started/aws/learn-nomad-gs-pytechco/nomad
             nomad job run pytechco-web.hcl
           "
