@@ -1,23 +1,21 @@
 name: Nomad Deploy
 
 on:
-push:
-branches:
-- master
+  push:
+    branches:
+      - master
 
 jobs:
-deploy:
-runs-on: ubuntu-latest
-
-steps:
-  - uses: actions/checkout@v4
-
-  - name: Deploy to Nomad
-    uses: appleboy/ssh-action@v1.0.3
-    with:
-      host: ${{ secrets.NOMAD_HOST }}
-      username: ubuntu
-      key: ${{ secrets.SSH_PRIVATE_KEY }}
-      script: |
-        cd /home/ubuntu/learn-nomad-getting-started/aws/learn-nomad-gs-pytechco/nomad
-        nomad job run pytechco-web.hcl
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Nomad
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.NOMAD_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu/learn-nomad-getting-started/aws/learn-nomad-gs-pytechco/nomad
+            nomad job run pytechco-web.hcl
